@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="a1 completed" />
+    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="a2 started">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/a2/word2vec.py" beforeDir="false" afterPath="$PROJECT_DIR$/a2/word2vec.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,6 +57,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.a1.executor": "Run",
+    "Python.word2vec.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
@@ -92,7 +96,7 @@
       <option name="presentableId" value="Default" />
       <updated>1710506018663</updated>
       <workItem from="1710507072423" duration="10312000" />
-      <workItem from="1710519741381" duration="8454000" />
+      <workItem from="1710519741381" duration="19614000" />
     </task>
     <task id="LOCAL-00001" summary="a1 added">
       <option name="closed" value="true" />
@@ -126,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710531303885</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="a2 started">
+      <option name="closed" value="true" />
+      <created>1710532488633</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1710532488633</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,9 +170,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="a1 added" />
     <MESSAGE value="a1 completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="a1 completed" />
+    <MESSAGE value="a2 started" />
+    <option name="LAST_COMMIT_MESSAGE" value="a2 started" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/cs224n$word2vec.coverage" NAME="word2vec Coverage Results" MODIFIED="1710625926111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a2" />
     <SUITE FILE_PATH="coverage/cs224n$a1.coverage" NAME="a1 Coverage Results" MODIFIED="1710518915679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a1" />
   </component>
 </project>
