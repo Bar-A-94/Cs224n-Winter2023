@@ -200,6 +200,17 @@ def skipgram(currentCenterWord, windowSize, outsideWords, word2Ind,
 
     ### YOUR CODE HERE (~8 Lines)
 
+    # convert the center word fron a string to the vector representing it
+    centerWordIdx = word2Ind[currentCenterWord]
+    centerWordVector = centerWordVectors[centerWordIdx]
+
+    for outsideWord in outsideWords:
+        outsideWordIdx = word2Ind[outsideWord]
+        out_loss,out_gradCenter, out_gradOutside = word2vecLossAndGradient(centerWordVector,outsideWordIdx, outsideVectors,dataset)
+        loss = out_loss + loss
+        gradCenterVecs[centerWordIdx] += out_gradCenter
+        gradOutsideVectors += out_gradOutside
+
     ### END YOUR CODE
 
     return loss, gradCenterVecs, gradOutsideVectors
