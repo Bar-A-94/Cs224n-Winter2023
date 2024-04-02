@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="a3 added and parser_transitions completed, reorganized the structure.">
+    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="a3 completed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a3/code/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/a3/code/parser_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/a3/code/parser_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a3/code/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/a3/code/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a3/code/utils/__init__.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,27 +53,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.a1.executor": "Run",
-    "Python.parser_model.executor": "Run",
-    "Python.parser_transitions.executor": "Run",
-    "Python.run.executor": "Run",
-    "Python.sgd.executor": "Run",
-    "Python.word2vec.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/bara/PycharmProjects/cs224n/a1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PythonContentEntriesConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.a1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parser_model.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parser_transitions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sgd.executor&quot;: &quot;Run&quot;,
+    &quot;Python.word2vec.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bara/PycharmProjects/cs224n/a1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PythonContentEntriesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/a1" />
@@ -138,7 +134,8 @@
       <workItem from="1710519741381" duration="29148000" />
       <workItem from="1711208531607" duration="3000" />
       <workItem from="1711377942978" duration="2855000" />
-      <workItem from="1711381431555" duration="15980000" />
+      <workItem from="1711381431555" duration="16270000" />
+      <workItem from="1711903273707" duration="1903000" />
     </task>
     <task id="LOCAL-00001" summary="a1 added">
       <option name="closed" value="true" />
@@ -220,7 +217,23 @@
       <option name="project" value="LOCAL" />
       <updated>1711406149429</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="a3 completed">
+      <option name="closed" value="true" />
+      <created>1711898674465</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1711898674465</updated>
+    </task>
+    <task id="LOCAL-00012" summary="a3 completed">
+      <option name="closed" value="true" />
+      <created>1711898682151</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1711898682151</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -257,7 +270,8 @@
     <MESSAGE value="a2 finished up a" />
     <MESSAGE value="a2 finished" />
     <MESSAGE value="a3 added and parser_transitions completed, reorganized the structure." />
-    <option name="LAST_COMMIT_MESSAGE" value="a3 added and parser_transitions completed, reorganized the structure." />
+    <MESSAGE value="a3 completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="a3 completed" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/cs224n$word2vec.coverage" NAME="word2vec Coverage Results" MODIFIED="1711378498017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a2/code" />
