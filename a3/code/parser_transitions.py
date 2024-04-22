@@ -48,7 +48,6 @@ class PartialParse(object):
                                 transition is a legal transition.
         """
         ### YOUR CODE HERE (~7-12 Lines)
-        ### TODO:
         ###     Implement a single parsing step, i.e. the logic for the following as
         ###     described in the pdf handout:
         ###         1. Shift
