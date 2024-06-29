@@ -1,0 +1,19 @@
+Index: .venv/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.venv/.gitignore b/.gitignore
+rename from .venv/.gitignore
+rename to .gitignore
+--- a/.venv/.gitignore	(revision 285cd6b304ac1182f59d2f1796c5d298ecb382bf)
++++ b/.gitignore	(date 1719653725788)
+@@ -1,3 +1,5 @@
+-# created by virtualenv automatically
+-* a4/code/model.bin
+-
++*.log
++*.zip
++*.tar.gz
++/node_modules
++/__pycache__
