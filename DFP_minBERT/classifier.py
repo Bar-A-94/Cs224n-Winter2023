@@ -1,9 +1,9 @@
 import argparse
 import csv
-import numpy as np
 import random
 from types import SimpleNamespace
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 from sklearn.metrics import f1_score, accuracy_score
@@ -50,16 +50,16 @@ class BertSentimentClassifier(torch.nn.Module):
                 param.requires_grad = True
 
         # Create any instance variables you need to classify the sentiment of BERT embeddings.
-        ### TODO
-        raise NotImplementedError
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
+        self.classifier = torch.nn.Linear(config.hidden_size, self.num_labels)
 
     def forward(self, input_ids, attention_mask):
         '''Takes a batch of sentences and returns logits for sentiment classes'''
         # The final BERT contextualized embedding is the hidden state of [CLS] token (the first token).
         # HINT: You should consider what is an appropriate return value given that
         # the training loop currently uses F.cross_entropy as the loss function.
-        ### TODO
-        raise NotImplementedError
+        bert_output = self.bert(input_ids, attention_mask)['pooler_output']
+        return self.classifier(self.dropout(bert_output))
 
 
 class SentimentDataset(Dataset):
@@ -232,7 +232,7 @@ def save_model(model, optimizer, args, config, filepath):
 
 
 def train(args):
-    device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+    device = 'mps' if args.use_gpu else torch.device('cpu')
     # Create the data and its corresponding datasets and dataloader.
     train_data, num_labels = load_data(args.train, 'train')
     dev_data = load_data(args.dev, 'valid')
@@ -299,7 +299,7 @@ def train(args):
 
 def test(args):
     with torch.no_grad():
-        device = torch.device('cuda') if args.use_gpu else torch.device('cpu')
+        device = torch.device('mps') if args.use_gpu else torch.device('cpu')
         saved = torch.load(args.filepath)
         config = saved['model_config']
         model = BertSentimentClassifier(config)
@@ -340,7 +340,7 @@ def get_args():
     parser.add_argument("--fine-tune-mode", type=str,
                         help='last-linear-layer: the BERT parameters are frozen and the task specific head parameters are updated; full-model: BERT parameters are updated as well',
                         choices=('last-linear-layer', 'full-model'), default="last-linear-layer")
-    parser.add_argument("--use_gpu", action='store_true')
+    parser.add_argument("--use_gpu", default='True')
 
     parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=8)
     parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)

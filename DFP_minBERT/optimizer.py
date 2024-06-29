@@ -1,3 +1,4 @@
+import math
 from typing import Callable, Iterable, Tuple
 
 import torch
@@ -58,7 +59,23 @@ class AdamW(Optimizer):
                 # 4. Apply weight decay after the main gradient-based updates.
                 # Refer to the default project handout for more details.
 
-                ### TODO
-                raise NotImplementedError
+                if len(state) == 0:
+                    state['m'] = torch.zeros(grad.size(), dtype=torch.float32)
+                    state['v'] = torch.zeros(grad.size(), dtype=torch.float32)
+                    state['t'] = 0
+                    state['m'] = state['m'].to(grad.device)
+                    state['v'] = state['v'].to(grad.device)
+
+                beta_1, beta_2 = group['betas']
+                eps = group['eps']
+                weight_decay = group['weight_decay']
+
+                state['t'] = state['t'] + 1
+                grad_t = grad + weight_decay * p.data
+                state["m"] = beta_1 * state["m"] + (1 - beta_1) * grad_t
+                state["v"] = beta_2 * state["v"] + (1 - beta_2) * grad_t * grad_t
+                alpha_t = alpha * math.sqrt(1 - pow(beta_2, state["t"])) / (1 - pow(beta_1, state["t"]))
+                p.data = p.data - alpha_t * state["m"] / (
+                            torch.sqrt(state["v"]) + eps) - alpha_t * weight_decay * p.data
 
         return loss
