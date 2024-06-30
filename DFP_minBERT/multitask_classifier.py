@@ -229,11 +229,12 @@ def train_multitask(args):
     in datasets.py to load in examples from the Quora and SemEval datasets.
     '''
     device = torch.device('mps') if args.use_gpu else torch.device('cpu')
+    print("Using device: {}".format(device))
     # Create the data and its corresponding datasets and dataloader.
     sst_train_dataloader, para_train_dataloader, sts_train_dataloader = create_train_dataloaders(args)
     sst_dev_dataloader, para_dev_dataloader, sts_dev_data, sts_dev_dataloader, num_labels = create_dev_dataloaders(args)
 
-    # Init model.
+    print("Init model")
     config = {'hidden_dropout_prob': args.hidden_dropout_prob,
               'num_labels': num_labels,
               'hidden_size': 768,
@@ -244,13 +245,19 @@ def train_multitask(args):
 
     model = MultitaskBERT(config)
     model = model.to(device)
-
+    print("model saved to {}".format(device))
+    with open(args.logpath, "w") as f:
+        f.write("Training started\n")
     for data_set_name, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
-        ("sst", sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
         ("para", para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
          F.binary_cross_entropy_with_logits, model_eval_para),
+        ("sst", sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
         ("sts", sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts)]:
-        print("Start training for {} dataset".format(data_set_name))
+        log_message = "Start training for {} dataset".format(data_set_name)
+        print(log_message)
+        with open(args.logpath, "a") as f:
+            f.write(log_message + "\n")
+        print(args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
         train(args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
 
 
@@ -258,6 +265,7 @@ def train(args, config, device, model, train_dataloader, dev_dataloader, predict
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
     best_dev_score = 0
+
     for epoch in range(args.epochs):
         model.train()
         train_loss = 0
@@ -289,8 +297,11 @@ def train(args, config, device, model, train_dataloader, dev_dataloader, predict
             best_dev_score = dev_score
             save_model(model, optimizer, args, config, args.filepath)
 
-        print(
-            f"Epoch {epoch}: train loss :: {train_loss :.3f}, train acc :: {train_score :.3f}, dev acc :: {dev_score :.3f}")
+        log_message = f"Epoch {epoch}: train loss :: {train_loss :.3f}, train acc :: {train_score :.3f}, dev acc :: {dev_score :.3f}"
+        print(log_message)
+
+        with open(args.logpath, "a") as f:
+            f.write(log_message + "\n")
 
 
 def test_multitask(args):
@@ -376,14 +387,14 @@ def get_args():
                         choices=('last-linear-layer', 'full-model'), default="last-linear-layer")
     parser.add_argument("--use_gpu", default='True')
 
-    parser.add_argument("--sst_dev_out", type=str, default="predictions/sst-dev-output.csv")
-    parser.add_argument("--sst_test_out", type=str, default="predictions/sst-test-output.csv")
+    parser.add_argument("--sst_dev_out", type=str, default="multitask_classifier/predictions/sst-dev-output.csv")
+    parser.add_argument("--sst_test_out", type=str, default="multitask_classifier/predictions/sst-test-output.csv")
 
-    parser.add_argument("--para_dev_out", type=str, default="predictions/para-dev-output.csv")
-    parser.add_argument("--para_test_out", type=str, default="predictions/para-test-output.csv")
+    parser.add_argument("--para_dev_out", type=str, default="multitask_classifier/predictions/para-dev-output.csv")
+    parser.add_argument("--para_test_out", type=str, default="multitask_classifier/predictions/para-test-output.csv")
 
-    parser.add_argument("--sts_dev_out", type=str, default="predictions/sts-dev-output.csv")
-    parser.add_argument("--sts_test_out", type=str, default="predictions/sts-test-output.csv")
+    parser.add_argument("--sts_dev_out", type=str, default="multitask_classifier/predictions/sts-dev-output.csv")
+    parser.add_argument("--sts_test_out", type=str, default="multitask_classifier/predictions/sts-test-output.csv")
 
     parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=8)
     parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)
@@ -395,7 +406,8 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    args.filepath = f'{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.pt'  # Save path.
-    seed_everything(args.seed)  # Fix the seed for reproducibility.
+    args.filepath = "multitask_classifier/models/" + f'{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.pt'
+    args.logpath = "multitask_classifier/logs/" + f'{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.txt'
+    seed_everything(args.seed)
     train_multitask(args)
     test_multitask(args)

@@ -357,7 +357,7 @@ if __name__ == "__main__":
 
     print('Training Sentiment Classifier on SST...')
     config = SimpleNamespace(
-        filepath='sst-classifier.pt',
+        filepath='sentiment_classifier/sst-classifier.pt',
         lr=args.lr,
         use_gpu=args.use_gpu,
         epochs=args.epochs,
@@ -378,7 +378,7 @@ if __name__ == "__main__":
 
     print('Training Sentiment Classifier on cfimdb...')
     config = SimpleNamespace(
-        filepath='cfimdb-classifier.pt',
+        filepath='sentiment_classifier/cfimdb-classifier.pt',
         lr=args.lr,
         use_gpu=args.use_gpu,
         epochs=args.epochs,

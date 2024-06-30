@@ -29,7 +29,8 @@ class SentenceClassificationDataset(Dataset):
     def __init__(self, dataset, args):
         self.dataset = dataset
         self.p = args
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        # TODO: Make this available offline
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')  # no-internet connection problem
 
     def __len__(self):
         return len(self.dataset)
@@ -210,6 +211,7 @@ class SentencePairTestDataset(Dataset):
 def load_multitask_data(sentiment_filename, paraphrase_filename, similarity_filename, split='train'):
     sentiment_data = []
     num_labels = {}
+    print("start")
     if split == 'test':
         with open(sentiment_filename, 'r') as fp:
             for record in csv.DictReader(fp, delimiter='\t'):

@@ -4,39 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="Done">
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/base_bert.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/bert.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/classifier.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-cfimdb-dev.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-cfimdb-test-student.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-cfimdb-train.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-sst-dev.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-sst-test-student.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/ids-sst-train.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/quora-dev.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/quora-test-student.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/quora-train.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/sts-dev.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/sts-test-student.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/data/sts-train.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/datasets.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/evaluation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/optimizer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/optimizer_test.npy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/optimizer_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/predictions/README" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/prepare_submit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/sanity_check.data" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/sanity_check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/setup.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/tokenizer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/utils.py" afterDir="false" />
+    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="DFP - first implementation of multitask classifier">
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/last-linear-layer-10-0.001-multitask.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/Part1_Result_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/Part1_Result_log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/README" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/README" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-cfimdb-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-cfimdb-dev-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-cfimdb-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-cfimdb-test-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-sst-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-sst-dev-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-sst-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-sst-test-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-cfimdb-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-cfimdb-dev-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-cfimdb-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-cfimdb-test-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-sst-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-sst-dev-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-sst-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-sst-test-out.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/prepare_submit.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/prepare_submit.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,37 +87,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python.a1.executor": "Run",
-    "Python.london_baseline.executor": "Run",
-    "Python.parser_model.executor": "Run",
-    "Python.parser_transitions.executor": "Run",
-    "Python.run.executor": "Run",
-    "Python.sanity_check.executor": "Debug",
-    "Python.sgd.executor": "Run",
-    "Python.utils.executor": "Run",
-    "Python.word2vec.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/bara/PycharmProjects/cs224n/a1",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python.a1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.london_baseline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parser_model.executor&quot;: &quot;Run&quot;,
+    &quot;Python.parser_transitions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sanity_check.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.sgd.executor&quot;: &quot;Run&quot;,
+    &quot;Python.utils.executor&quot;: &quot;Run&quot;,
+    &quot;Python.word2vec.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bara/PycharmProjects/cs224n/a1&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/a1" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/DFP_minBERT/part1" />
       <recent name="$PROJECT_DIR$/a3/code" />
       <recent name="$PROJECT_DIR$/a2/code" />
       <recent name="$PROJECT_DIR$" />
@@ -218,6 +203,8 @@
       <workItem from="1712406182172" duration="25457000" />
       <workItem from="1715371966468" duration="15487000" />
       <workItem from="1717087967157" duration="15613000" />
+      <workItem from="1719741151772" duration="13545000" />
+      <workItem from="1719767808058" duration="3859000" />
     </task>
     <task id="LOCAL-00001" summary="a1 added">
       <option name="closed" value="true" />
@@ -443,7 +430,31 @@
       <option name="project" value="LOCAL" />
       <updated>1719656608145</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="DFP - 3.2 BERT implemented">
+      <option name="closed" value="true" />
+      <created>1719666887536</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1719666887536</updated>
+    </task>
+    <task id="LOCAL-00030" summary="DFP - 4.4 minBERT for Sentiment Classification">
+      <option name="closed" value="true" />
+      <created>1719691948332</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1719691948332</updated>
+    </task>
+    <task id="LOCAL-00031" summary="DFP - first implementation of multitask classifier">
+      <option name="closed" value="true" />
+      <created>1719761405703</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1719761405703</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -460,7 +471,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>
@@ -494,7 +505,10 @@
     <MESSAGE value="a5 - finished" />
     <MESSAGE value="Finished" />
     <MESSAGE value="Done" />
-    <option name="LAST_COMMIT_MESSAGE" value="Done" />
+    <MESSAGE value="DFP - 3.2 BERT implemented" />
+    <MESSAGE value="DFP - 4.4 minBERT for Sentiment Classification" />
+    <MESSAGE value="DFP - first implementation of multitask classifier" />
+    <option name="LAST_COMMIT_MESSAGE" value="DFP - first implementation of multitask classifier" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
