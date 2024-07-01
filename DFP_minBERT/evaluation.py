@@ -68,6 +68,7 @@ def model_eval_para(dataloader, model, device):
 
         paraphrase_accuracy = np.mean(np.array(para_y_pred) == np.array(para_y_true))
         print(f'Paraphrase detection accuracy: {paraphrase_accuracy:.3f}')
+        return paraphrase_accuracy
 
 
 def model_eval_sts(dataloader, model, device):

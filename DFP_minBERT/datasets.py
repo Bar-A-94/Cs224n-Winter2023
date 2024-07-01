@@ -10,6 +10,7 @@ examples are preprocessed.
 
 import csv
 
+import numpy as np
 import torch
 from torch.utils.data import Dataset
 
@@ -130,7 +131,7 @@ class SentencePairDataset(Dataset):
         attention_mask2 = torch.LongTensor(encoding2['attention_mask'])
         token_type_ids2 = torch.LongTensor(encoding2['token_type_ids'])
         if self.isRegression:
-            labels = torch.DoubleTensor(labels)
+            labels = torch.FloatTensor(labels)
         else:
             labels = torch.LongTensor(labels)
 
@@ -265,7 +266,7 @@ def load_multitask_data(sentiment_filename, paraphrase_filename, similarity_file
                 sent_id = record['id'].lower().strip()
                 similarity_data.append((preprocess_string(record['sentence1']),
                                         preprocess_string(record['sentence2']),
-                                        float(record['similarity']), sent_id))
+                                        np.float32(record['similarity']), sent_id))
 
     print(f"Loaded {len(similarity_data)} {split} examples from {similarity_filename}")
 

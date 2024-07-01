@@ -202,15 +202,18 @@ def create_train_dataloaders(args):
 
     sst_train_data = SentenceClassificationDataset(sst_train_data, args)
     sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size, num_workers=8,
+                                      drop_last=True,
                                       persistent_workers=True, prefetch_factor=4, collate_fn=sst_train_data.collate_fn)
 
     para_train_data = SentencePairDataset(para_train_data, args)
     para_train_dataloader = DataLoader(para_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                       drop_last=True,
                                        persistent_workers=True, prefetch_factor=4,
                                        collate_fn=para_train_data.collate_fn)
 
     sts_train_data = SentencePairDataset(sts_train_data, args, isRegression=True)
     sts_train_dataloader = DataLoader(sts_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                      drop_last=True,
                                       persistent_workers=True, prefetch_factor=4, collate_fn=sts_train_data.collate_fn)
 
     return sst_train_dataloader, para_train_dataloader, sts_train_dataloader
@@ -282,10 +285,11 @@ def train_multitask(args):
     with open(args.logpath, "w") as f:
         f.write("Training started\n")
     for data_set_name, inputs, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
-        ("para", 2, para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
-         torch.nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para),
+        ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts),
         ("sst", 1, sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
-        ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts)]:
+        ("para", 2, para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
+         nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para)
+    ]:
         print_and_log(args, "Start training for {} dataset".format(data_set_name))
         train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
 
@@ -294,21 +298,20 @@ def train(inputs, args, config, device, model, train_dataloader, dev_dataloader,
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
     best_dev_score = 0
-
     for epoch in range(args.epochs):
         model.train()
         train_loss = 0
         num_batches = 0
+
         for batch in tqdm(train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
-            batch = {k: v.to(device) for k, v in batch.items() if k != 'sent_ids'}
+            batch = {k: v.to(device) for k, v in batch.items() if k not in ['sent_ids', 'sents']}
+            optimizer.zero_grad(set_to_none=True)
+
             if inputs == 2:
-                optimizer.zero_grad(set_to_none=True)
                 logits = predict_func(batch['token_ids_1'], batch['attention_mask_1'], batch['token_ids_2'],
                                       batch['attention_mask_2'])
                 loss = loss_func(logits, batch['labels'].view(args.batch_size, -1).float()) / args.batch_size
-
             else:
-                optimizer.zero_grad(set_to_none=True)
                 logits = predict_func(batch["token_ids"], batch["attention_mask"])
                 loss = loss_func(logits, batch['labels'].view(-1), reduction='sum') / args.batch_size
 
@@ -320,14 +323,15 @@ def train(inputs, args, config, device, model, train_dataloader, dev_dataloader,
 
         train_loss /= num_batches
 
-        train_score = eval_func(train_dataloader, model, device)
+        # train_score = eval_func(train_dataloader, model, device)
         dev_score = eval_func(dev_dataloader, model, device)
 
         if dev_score > best_dev_score:
             best_dev_score = dev_score
             save_model(model, optimizer, args, config, args.filepath)
+
         print_and_log(args,
-                      f"Epoch {epoch}: train loss :: {train_loss :.3f}, train acc :: {train_score :.3f}, dev acc :: {dev_score :.3f}")
+                      f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_score :.3f}")
 
 
 def test_multitask(args):
@@ -425,6 +429,7 @@ def get_args():
     parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=32)
     parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)
     parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
+    parser.add_argument("--version", type=str, default="basic")
 
     args = parser.parse_args()
     return args
@@ -432,8 +437,8 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    args.filepath = "multitask_classifier/models/" + f'{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.pt'
-    args.logpath = "multitask_classifier/logs/" + f'{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.txt'
+    args.filepath = "multitask_classifier/models/" + f'{args.version}--{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.pt'
+    args.logpath = "multitask_classifier/logs/" + f'{args.version}--{args.fine_tune_mode}-{args.epochs}-{args.lr}-multitask.txt'
     seed_everything(args.seed)
     train_multitask(args)
     test_multitask(args)
