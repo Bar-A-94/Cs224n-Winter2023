@@ -1,7 +1,2 @@
 Training started
-Epoch 0: train loss :: 1.603, train acc :: 0.348, dev acc :: 0.326
-Epoch 1: train loss :: 1.544, train acc :: 0.402, dev acc :: 0.372
-Epoch 2: train loss :: 1.509, train acc :: 0.338, dev acc :: 0.323
-Epoch 3: train loss :: 1.488, train acc :: 0.350, dev acc :: 0.366
-Epoch 4: train loss :: 1.472, train acc :: 0.402, dev acc :: 0.378
-Epoch 5: train loss :: 1.475, train acc :: 0.393, dev acc :: 0.354
+Start training for para dataset

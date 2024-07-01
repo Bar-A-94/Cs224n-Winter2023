@@ -52,6 +52,12 @@ BERT_HIDDEN_SIZE = 768
 N_SENTIMENT_CLASSES = 5
 
 
+def print_and_log(args, log_message):
+    print(log_message)
+    with open(args.logpath, "a") as f:
+        f.write(log_message + "\n")
+
+
 class MultitaskBERT(nn.Module):
     '''
     This module should use BERT for 3 tasks:
@@ -59,6 +65,32 @@ class MultitaskBERT(nn.Module):
     - Sentiment classification (predict_sentiment)
     - Paraphrase detection (predict_paraphrase)
     - Semantic Textual Similarity (predict_similarity)
+    Model Summary:
+        MultitaskBERT(
+          (bert): BertModel(
+            (word_embedding): Embedding(30522, 768, padding_idx=0)
+            (pos_embedding): Embedding(512, 768)
+            (tk_type_embedding): Embedding(2, 768)
+            (embed_layer_norm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (embed_dropout): Dropout(p=0.1, inplace=False)
+            (bert_layers): ModuleList(
+              (0-11): 12 x BertLayer(
+                (self_attention): BertSelfAttention(
+                  (query): Linear(in_features=768, out_features=768, bias=True)
+                  (key): Linear(in_features=768, out_features=768, bias=True)
+                  (value): Linear(in_features=768, out_features=768, bias=True)
+                  (dropout): Dropout(p=0.1, inplace=False)
+                )
+                (attention_dense): Linear(in_features=768, out_features=768, bias=True)
+                (attention_layer_norm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+                (attention_dropout): Dropout(p=0.1, inplace=False)
+                (interm_dense): Linear(in_features=768, out_features=3072, bias=True)
+                (out_dense): Linear(in_features=3072, out_features=768, bias=True)
+                (out_layer_norm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+                (out_dropout): Dropout(p=0.1, inplace=False)
+              )
+            )
+
     '''
 
     def __init__(self, config):
@@ -169,16 +201,17 @@ def create_train_dataloaders(args):
                                                                                       args.sts_train, split='train')
 
     sst_train_data = SentenceClassificationDataset(sst_train_data, args)
-    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size,
-                                      collate_fn=sst_train_data.collate_fn)
+    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size, num_workers=8,
+                                      persistent_workers=True, prefetch_factor=4, collate_fn=sst_train_data.collate_fn)
 
     para_train_data = SentencePairDataset(para_train_data, args)
-    para_train_dataloader = DataLoader(para_train_data, shuffle=False, batch_size=args.batch_size,
+    para_train_dataloader = DataLoader(para_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                       persistent_workers=True, prefetch_factor=4,
                                        collate_fn=para_train_data.collate_fn)
 
     sts_train_data = SentencePairDataset(sts_train_data, args, isRegression=True)
-    sts_train_dataloader = DataLoader(sts_train_data, shuffle=False, batch_size=args.batch_size,
-                                      collate_fn=sts_train_data.collate_fn)
+    sts_train_dataloader = DataLoader(sts_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                      persistent_workers=True, prefetch_factor=4, collate_fn=sts_train_data.collate_fn)
 
     return sst_train_dataloader, para_train_dataloader, sts_train_dataloader
 
@@ -248,20 +281,16 @@ def train_multitask(args):
     print("model saved to {}".format(device))
     with open(args.logpath, "w") as f:
         f.write("Training started\n")
-    for data_set_name, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
-        ("para", para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
-         F.binary_cross_entropy_with_logits, model_eval_para),
-        ("sst", sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
-        ("sts", sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts)]:
-        log_message = "Start training for {} dataset".format(data_set_name)
-        print(log_message)
-        with open(args.logpath, "a") as f:
-            f.write(log_message + "\n")
-        print(args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
-        train(args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
+    for data_set_name, inputs, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
+        ("para", 2, para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
+         torch.nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para),
+        ("sst", 1, sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
+        ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts)]:
+        print_and_log(args, "Start training for {} dataset".format(data_set_name))
+        train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
 
 
-def train(args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func):
+def train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func):
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
     best_dev_score = 0
@@ -271,16 +300,17 @@ def train(args, config, device, model, train_dataloader, dev_dataloader, predict
         train_loss = 0
         num_batches = 0
         for batch in tqdm(train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
-            b_ids, b_mask, b_labels = (batch['token_ids'],
-                                       batch['attention_mask'], batch['labels'])
+            batch = {k: v.to(device) for k, v in batch.items() if k != 'sent_ids'}
+            if inputs == 2:
+                optimizer.zero_grad(set_to_none=True)
+                logits = predict_func(batch['token_ids_1'], batch['attention_mask_1'], batch['token_ids_2'],
+                                      batch['attention_mask_2'])
+                loss = loss_func(logits, batch['labels'].view(args.batch_size, -1).float()) / args.batch_size
 
-            b_ids = b_ids.to(device)
-            b_mask = b_mask.to(device)
-            b_labels = b_labels.to(device)
-
-            optimizer.zero_grad()
-            logits = predict_func(b_ids, b_mask)
-            loss = loss_func(logits, b_labels.view(-1), reduction='sum') / args.batch_size
+            else:
+                optimizer.zero_grad(set_to_none=True)
+                logits = predict_func(batch["token_ids"], batch["attention_mask"])
+                loss = loss_func(logits, batch['labels'].view(-1), reduction='sum') / args.batch_size
 
             loss.backward()
             optimizer.step()
@@ -288,7 +318,7 @@ def train(args, config, device, model, train_dataloader, dev_dataloader, predict
             train_loss += loss.item()
             num_batches += 1
 
-        train_loss = train_loss / num_batches
+        train_loss /= num_batches
 
         train_score = eval_func(train_dataloader, model, device)
         dev_score = eval_func(dev_dataloader, model, device)
@@ -296,12 +326,8 @@ def train(args, config, device, model, train_dataloader, dev_dataloader, predict
         if dev_score > best_dev_score:
             best_dev_score = dev_score
             save_model(model, optimizer, args, config, args.filepath)
-
-        log_message = f"Epoch {epoch}: train loss :: {train_loss :.3f}, train acc :: {train_score :.3f}, dev acc :: {dev_score :.3f}"
-        print(log_message)
-
-        with open(args.logpath, "a") as f:
-            f.write(log_message + "\n")
+        print_and_log(args,
+                      f"Epoch {epoch}: train loss :: {train_loss :.3f}, train acc :: {train_score :.3f}, dev acc :: {dev_score :.3f}")
 
 
 def test_multitask(args):
@@ -396,7 +422,7 @@ def get_args():
     parser.add_argument("--sts_dev_out", type=str, default="multitask_classifier/predictions/sts-dev-output.csv")
     parser.add_argument("--sts_test_out", type=str, default="multitask_classifier/predictions/sts-test-output.csv")
 
-    parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=8)
+    parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=32)
     parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)
     parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
 

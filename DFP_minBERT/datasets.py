@@ -211,7 +211,6 @@ class SentencePairTestDataset(Dataset):
 def load_multitask_data(sentiment_filename, paraphrase_filename, similarity_filename, split='train'):
     sentiment_data = []
     num_labels = {}
-    print("start")
     if split == 'test':
         with open(sentiment_filename, 'r') as fp:
             for record in csv.DictReader(fp, delimiter='\t'):
