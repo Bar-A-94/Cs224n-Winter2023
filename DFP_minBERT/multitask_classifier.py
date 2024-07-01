@@ -297,6 +297,7 @@ def train_multitask(args):
 def train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func):
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
+
     best_dev_score = 0
     for epoch in range(args.epochs):
         model.train()
@@ -322,8 +323,6 @@ def train(inputs, args, config, device, model, train_dataloader, dev_dataloader,
             num_batches += 1
 
         train_loss /= num_batches
-
-        # train_score = eval_func(train_dataloader, model, device)
         dev_score = eval_func(dev_dataloader, model, device)
 
         if dev_score > best_dev_score:

@@ -1,0 +1,2 @@
+basic model - fine-tuned every task separately, no scheduler results on dev: sts - 0.277 | sst - 0.411 | para - 0.701
+scheduler effect - same as base but with scheduler with reduce on plateau 0.1 every 2.
