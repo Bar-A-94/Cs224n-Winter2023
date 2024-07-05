@@ -1,7 +1,9 @@
+import argparse
 import copy
 import fnmatch
 import json
 import os
+import random
 import sys
 import tempfile
 from functools import partial
@@ -11,6 +13,7 @@ from typing import Dict, List, Optional, Union, Tuple, BinaryIO
 from urllib.parse import urlparse
 
 import importlib_metadata
+import numpy as np
 import requests
 import torch
 import torch.nn as nn
@@ -347,3 +350,74 @@ def get_extended_attention_mask(attention_mask: Tensor, dtype) -> Tensor:
     extended_attention_mask = extended_attention_mask.to(dtype=dtype)  # fp16 compatibility
     extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
     return extended_attention_mask
+
+
+def save_model(model, optimizer, args, config, filepath):
+    save_info = {
+        'model': model.state_dict(),
+        'optim': optimizer.state_dict(),
+        'args': args,
+        'model_config': config,
+        'system_rng': random.getstate(),
+        'numpy_rng': np.random.get_state(),
+        'torch_rng': torch.random.get_rng_state(),
+    }
+
+    torch.save(save_info, filepath)
+    print(f"save the model to {filepath}")
+
+
+def print_and_log(args, log_message):
+    print(log_message)
+    with open(args.logpath, "a") as f:
+        f.write(log_message + "\n")
+
+
+# Fix the random seed.
+def seed_everything(seed=11711):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sst_train", type=str, default="data/ids-sst-train.csv")
+    parser.add_argument("--sst_dev", type=str, default="data/ids-sst-dev.csv")
+    parser.add_argument("--sst_test", type=str, default="data/ids-sst-test-student.csv")
+
+    parser.add_argument("--para_train", type=str, default="data/quora-train.csv")
+    parser.add_argument("--para_dev", type=str, default="data/quora-dev.csv")
+    parser.add_argument("--para_test", type=str, default="data/quora-test-student.csv")
+
+    parser.add_argument("--sts_train", type=str, default="data/sts-train.csv")
+    parser.add_argument("--sts_dev", type=str, default="data/sts-dev.csv")
+    parser.add_argument("--sts_test", type=str, default="data/sts-test-student.csv")
+
+    parser.add_argument("--seed", type=int, default=11711)
+    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--fine-tune-mode", type=str,
+                        help='last-linear-layer: the BERT parameters are frozen and the task specific head parameters are updated; full-model: BERT parameters are updated as well',
+                        choices=('last-linear-layer', 'full-model'), default="last-linear-layer")
+    parser.add_argument("--use_gpu", default='True')
+
+    parser.add_argument("--sst_dev_out", type=str, default="multitask_classifier/predictions/sst-dev-output.csv")
+    parser.add_argument("--sst_test_out", type=str, default="multitask_classifier/predictions/sst-test-output.csv")
+
+    parser.add_argument("--para_dev_out", type=str, default="multitask_classifier/predictions/para-dev-output.csv")
+    parser.add_argument("--para_test_out", type=str, default="multitask_classifier/predictions/para-test-output.csv")
+
+    parser.add_argument("--sts_dev_out", type=str, default="multitask_classifier/predictions/sts-dev-output.csv")
+    parser.add_argument("--sts_test_out", type=str, default="multitask_classifier/predictions/sts-test-output.csv")
+
+    parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=32)
+    parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)
+    parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
+    parser.add_argument("--version", type=str, default="basic")
+
+    args = parser.parse_args()
+    return args

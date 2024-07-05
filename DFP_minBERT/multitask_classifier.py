@@ -12,50 +12,23 @@ Running `python multitask_classifier.py` trains and tests your MultitaskBERT and
 writes all required submission files.
 '''
 
-import argparse
-import random
 from types import SimpleNamespace
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from tqdm import tqdm
 
 from bert import BertModel
-from datasets import (
-    SentenceClassificationDataset,
-    SentenceClassificationTestDataset,
-    SentencePairDataset,
-    SentencePairTestDataset,
-    load_multitask_data
-)
+from datasets import create_train_dataloaders, create_dev_dataloaders, create_test_dataloaders
 from evaluation import model_eval_sst, model_eval_para, model_eval_sts, model_eval_multitask, model_eval_test_multitask
 from optimizer import AdamW
+from utils import save_model, print_and_log, seed_everything, get_args
 
 TQDM_DISABLE = False
-
-
-# Fix the random seed.
-def seed_everything(seed=11711):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
-
-
 BERT_HIDDEN_SIZE = 768
 N_SENTIMENT_CLASSES = 5
-
-
-def print_and_log(args, log_message):
-    print(log_message)
-    with open(args.logpath, "a") as f:
-        f.write(log_message + "\n")
 
 
 class MultitaskBERT(nn.Module):
@@ -104,10 +77,14 @@ class MultitaskBERT(nn.Module):
             elif config.fine_tune_mode == 'full-model':
                 param.requires_grad = True
         # My code:
+        self.r = 32
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.sentiment_last_layer = nn.Linear(config.hidden_size, N_SENTIMENT_CLASSES)
         self.paraphrase_last_layer = nn.Linear(2 * config.hidden_size, 1)
-        self.similarity_last_layer = nn.Linear(2 * config.hidden_size, 1)
+        self.similarity_layer_1 = nn.Linear(config.hidden_size, self.r)
+        self.similarity_layer_2 = nn.Linear(config.hidden_size, self.r)
+        self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+        self.sigmoid = nn.Sigmoid()
 
         # TODO: check size for data compression
         # self.shrink = nn.Linear(config.hidden_size, int(config.hidden_size/2))
@@ -165,10 +142,13 @@ class MultitaskBERT(nn.Module):
         '''Given a batch of pairs of sentences, outputs a single logit corresponding to how similar they are.
         Note that your output should be unnormalized (a logit).
         '''
-        bert_out_1 = self.forward(input_ids_1, attention_mask_1)
-        bert_out_2 = self.forward(input_ids_2, attention_mask_2)
-        concat_embbed = torch.cat((bert_out_1, bert_out_2), dim=1)
-        return self.dropout(self.similarity_last_layer(concat_embbed))
+        bert_out_1 = self.dropout(self.similarity_layer_1(self.forward(input_ids_1, attention_mask_1)))
+        bert_out_2 = self.dropout(self.similarity_layer_2(self.forward(input_ids_2, attention_mask_2)))
+        bert_out_1_shaped = bert_out_1.view(bert_out_1.shape[0], 1, bert_out_1.shape[1])
+        bert_out_2_shaped = bert_out_2.view(bert_out_1.shape[0], bert_out_1.shape[1], 1)
+        out = 5 * (bert_out_1_shaped @ bert_out_2_shaped).reshape(input_ids_1.shape[0], -1)
+        # out = 5 * self.sigmoid(self.cos(bert_out_1, bert_out_2).unsqueeze(-1))
+        return out
 
         # TODO: try 1D conv
         # Stack embeddings: (batch_size, hidden_size, 2)
@@ -179,81 +159,6 @@ class MultitaskBERT(nn.Module):
         # pooled = F.max_pool1d(conv_out, conv_out.size(2)).squeeze(2)
         # Final classification
         # return self.dropout(self.similarity_last_layer(pooled))
-
-
-def save_model(model, optimizer, args, config, filepath):
-    save_info = {
-        'model': model.state_dict(),
-        'optim': optimizer.state_dict(),
-        'args': args,
-        'model_config': config,
-        'system_rng': random.getstate(),
-        'numpy_rng': np.random.get_state(),
-        'torch_rng': torch.random.get_rng_state(),
-    }
-
-    torch.save(save_info, filepath)
-    print(f"save the model to {filepath}")
-
-
-def create_train_dataloaders(args):
-    sst_train_data, num_labels, para_train_data, sts_train_data = load_multitask_data(args.sst_train, args.para_train,
-                                                                                      args.sts_train, split='train')
-
-    sst_train_data = SentenceClassificationDataset(sst_train_data, args)
-    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size, num_workers=8,
-                                      drop_last=True,
-                                      persistent_workers=True, prefetch_factor=4, collate_fn=sst_train_data.collate_fn)
-
-    para_train_data = SentencePairDataset(para_train_data, args)
-    para_train_dataloader = DataLoader(para_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
-                                       drop_last=True,
-                                       persistent_workers=True, prefetch_factor=4,
-                                       collate_fn=para_train_data.collate_fn)
-
-    sts_train_data = SentencePairDataset(sts_train_data, args, isRegression=True)
-    sts_train_dataloader = DataLoader(sts_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
-                                      drop_last=True,
-                                      persistent_workers=True, prefetch_factor=4, collate_fn=sts_train_data.collate_fn)
-
-    return sst_train_dataloader, para_train_dataloader, sts_train_dataloader
-
-
-def create_dev_dataloaders(args):
-    sst_dev_data, num_labels, para_dev_data, sts_dev_data = \
-        load_multitask_data(args.sst_dev, args.para_dev, args.sts_dev, split='dev')
-
-    sst_dev_data = SentenceClassificationDataset(sst_dev_data, args)
-    sst_dev_dataloader = DataLoader(sst_dev_data, shuffle=False, batch_size=args.batch_size,
-                                    collate_fn=sst_dev_data.collate_fn)
-
-    para_dev_data = SentencePairDataset(para_dev_data, args)
-    para_dev_dataloader = DataLoader(para_dev_data, shuffle=False, batch_size=args.batch_size,
-                                     collate_fn=para_dev_data.collate_fn)
-
-    sts_dev_data = SentencePairDataset(sts_dev_data, args, isRegression=True)
-    sts_dev_dataloader = DataLoader(sts_dev_data, shuffle=False, batch_size=args.batch_size,
-                                    collate_fn=sts_dev_data.collate_fn)
-    return sst_dev_dataloader, para_dev_dataloader, sts_dev_data, sts_dev_dataloader, num_labels
-
-
-def create_test_dataloaders(args):
-    sst_test_data, num_labels, para_test_data, sts_test_data = \
-        load_multitask_data(args.sst_test, args.para_test, args.sts_test, split='test')
-
-    sst_test_data = SentenceClassificationTestDataset(sst_test_data, args)
-    sst_test_dataloader = DataLoader(sst_test_data, shuffle=True, batch_size=args.batch_size,
-                                     collate_fn=sst_test_data.collate_fn)
-
-    para_test_data = SentencePairTestDataset(para_test_data, args)
-    para_test_dataloader = DataLoader(para_test_data, shuffle=True, batch_size=args.batch_size,
-                                      collate_fn=para_test_data.collate_fn)
-
-    sts_test_data = SentencePairTestDataset(sts_test_data, args)
-    sts_test_dataloader = DataLoader(sts_test_data, shuffle=True, batch_size=args.batch_size,
-                                     collate_fn=sts_test_data.collate_fn)
-
-    return sst_test_dataloader, para_test_dataloader, sts_test_dataloader
 
 
 def train_multitask(args):
@@ -285,7 +190,7 @@ def train_multitask(args):
     with open(args.logpath, "w") as f:
         f.write("Training started\n")
     for data_set_name, inputs, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
-        ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.mse_loss, model_eval_sts),
+        ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.l1_loss, model_eval_sts),
         ("sst", 1, sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
         ("para", 2, para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
          nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para)
@@ -297,6 +202,7 @@ def train_multitask(args):
 def train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func):
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, threshold=0.001, threshold_mode='abs', patience=5)
 
     best_dev_score = 0
     for epoch in range(args.epochs):
@@ -328,9 +234,9 @@ def train(inputs, args, config, device, model, train_dataloader, dev_dataloader,
         if dev_score > best_dev_score:
             best_dev_score = dev_score
             save_model(model, optimizer, args, config, args.filepath)
-
+        scheduler.step(train_loss)
         print_and_log(args,
-                      f"Epoch {epoch}: train loss :: {train_loss :.3f}, dev acc :: {dev_score :.3f}")
+                      f"Epoch {epoch}:: lr :: {scheduler.get_last_lr()[-1] :.6f} train loss :: {train_loss :.5f}, dev acc :: {dev_score :.3f}")
 
 
 def test_multitask(args):
@@ -393,45 +299,6 @@ def test_multitask(args):
             f.write(f"id \t Predicted_Similiary \n")
             for p, s in zip(test_sts_sent_ids, test_sts_y_pred):
                 f.write(f"{p} , {s} \n")
-
-
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--sst_train", type=str, default="data/ids-sst-train.csv")
-    parser.add_argument("--sst_dev", type=str, default="data/ids-sst-dev.csv")
-    parser.add_argument("--sst_test", type=str, default="data/ids-sst-test-student.csv")
-
-    parser.add_argument("--para_train", type=str, default="data/quora-train.csv")
-    parser.add_argument("--para_dev", type=str, default="data/quora-dev.csv")
-    parser.add_argument("--para_test", type=str, default="data/quora-test-student.csv")
-
-    parser.add_argument("--sts_train", type=str, default="data/sts-train.csv")
-    parser.add_argument("--sts_dev", type=str, default="data/sts-dev.csv")
-    parser.add_argument("--sts_test", type=str, default="data/sts-test-student.csv")
-
-    parser.add_argument("--seed", type=int, default=11711)
-    parser.add_argument("--epochs", type=int, default=10)
-    parser.add_argument("--fine-tune-mode", type=str,
-                        help='last-linear-layer: the BERT parameters are frozen and the task specific head parameters are updated; full-model: BERT parameters are updated as well',
-                        choices=('last-linear-layer', 'full-model'), default="last-linear-layer")
-    parser.add_argument("--use_gpu", default='True')
-
-    parser.add_argument("--sst_dev_out", type=str, default="multitask_classifier/predictions/sst-dev-output.csv")
-    parser.add_argument("--sst_test_out", type=str, default="multitask_classifier/predictions/sst-test-output.csv")
-
-    parser.add_argument("--para_dev_out", type=str, default="multitask_classifier/predictions/para-dev-output.csv")
-    parser.add_argument("--para_test_out", type=str, default="multitask_classifier/predictions/para-test-output.csv")
-
-    parser.add_argument("--sts_dev_out", type=str, default="multitask_classifier/predictions/sts-dev-output.csv")
-    parser.add_argument("--sts_test_out", type=str, default="multitask_classifier/predictions/sts-test-output.csv")
-
-    parser.add_argument("--batch_size", help='sst: 64, cfimdb: 8 can fit a 12GB GPU', type=int, default=32)
-    parser.add_argument("--hidden_dropout_prob", type=float, default=0.3)
-    parser.add_argument("--lr", type=float, help="learning rate", default=1e-5)
-    parser.add_argument("--version", type=str, default="basic")
-
-    args = parser.parse_args()
-    return args
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ import csv
 
 import numpy as np
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 from tokenizer import BertTokenizer
 
@@ -271,3 +271,63 @@ def load_multitask_data(sentiment_filename, paraphrase_filename, similarity_file
     print(f"Loaded {len(similarity_data)} {split} examples from {similarity_filename}")
 
     return sentiment_data, num_labels, paraphrase_data, similarity_data
+
+
+def create_train_dataloaders(args):
+    sst_train_data, num_labels, para_train_data, sts_train_data = load_multitask_data(args.sst_train, args.para_train,
+                                                                                      args.sts_train, split='train')
+
+    sst_train_data = SentenceClassificationDataset(sst_train_data, args)
+    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size, num_workers=8,
+                                      drop_last=True,
+                                      persistent_workers=True, prefetch_factor=4, collate_fn=sst_train_data.collate_fn)
+
+    para_train_data = SentencePairDataset(para_train_data, args)
+    para_train_dataloader = DataLoader(para_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                       drop_last=True,
+                                       persistent_workers=True, prefetch_factor=4,
+                                       collate_fn=para_train_data.collate_fn)
+
+    sts_train_data = SentencePairDataset(sts_train_data, args, isRegression=True)
+    sts_train_dataloader = DataLoader(sts_train_data, shuffle=False, batch_size=args.batch_size, num_workers=8,
+                                      drop_last=True,
+                                      persistent_workers=True, prefetch_factor=4, collate_fn=sts_train_data.collate_fn)
+
+    return sst_train_dataloader, para_train_dataloader, sts_train_dataloader
+
+
+def create_dev_dataloaders(args):
+    sst_dev_data, num_labels, para_dev_data, sts_dev_data = \
+        load_multitask_data(args.sst_dev, args.para_dev, args.sts_dev, split='dev')
+
+    sst_dev_data = SentenceClassificationDataset(sst_dev_data, args)
+    sst_dev_dataloader = DataLoader(sst_dev_data, shuffle=False, batch_size=args.batch_size,
+                                    collate_fn=sst_dev_data.collate_fn)
+
+    para_dev_data = SentencePairDataset(para_dev_data, args)
+    para_dev_dataloader = DataLoader(para_dev_data, shuffle=False, batch_size=args.batch_size,
+                                     collate_fn=para_dev_data.collate_fn)
+
+    sts_dev_data = SentencePairDataset(sts_dev_data, args, isRegression=True)
+    sts_dev_dataloader = DataLoader(sts_dev_data, shuffle=False, batch_size=args.batch_size,
+                                    collate_fn=sts_dev_data.collate_fn)
+    return sst_dev_dataloader, para_dev_dataloader, sts_dev_data, sts_dev_dataloader, num_labels
+
+
+def create_test_dataloaders(args):
+    sst_test_data, num_labels, para_test_data, sts_test_data = \
+        load_multitask_data(args.sst_test, args.para_test, args.sts_test, split='test')
+
+    sst_test_data = SentenceClassificationTestDataset(sst_test_data, args)
+    sst_test_dataloader = DataLoader(sst_test_data, shuffle=True, batch_size=args.batch_size,
+                                     collate_fn=sst_test_data.collate_fn)
+
+    para_test_data = SentencePairTestDataset(para_test_data, args)
+    para_test_dataloader = DataLoader(para_test_data, shuffle=True, batch_size=args.batch_size,
+                                      collate_fn=para_test_data.collate_fn)
+
+    sts_test_data = SentencePairTestDataset(sts_test_data, args)
+    sts_test_dataloader = DataLoader(sts_test_data, shuffle=True, batch_size=args.batch_size,
+                                     collate_fn=sts_test_data.collate_fn)
+
+    return sst_test_dataloader, para_test_dataloader, sts_test_dataloader

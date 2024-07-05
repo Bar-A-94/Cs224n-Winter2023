@@ -1,2 +1,12 @@
 basic model - fine-tuned every task separately, no scheduler results on dev: sts - 0.277 | sst - 0.411 | para - 0.701
-scheduler effect - same as base but with scheduler with reduce on plateau 0.1 every 2.
+scheduler effect - same as base but with scheduler with reduce on plateau 0.1 every 4 with 20 epochs - sts - 0.262 | sst - 0.416 | para - DNE
+loss function for sts - changed from MSE to L1 loss - sts - 0.256
+                        MSE + 5 * sigmoid  - sts - 0.274
+                        hubber_loss + 5 * sigmoid - 0.275
+STS prediction - dot product instead of linear layer (32) - L1 0.308
+                                                     (16) - L1 0.285
+                                                     (16) - hub 0.275
+                                                     (16) - MSE 0.279
+full model fine tune - sts - 0.332 | sst - 0.517 | para - 0.810, needs to split to 3 different models
+
+
