@@ -4,23 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="DFP - first implementation of multitask classifier">
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/last-linear-layer-10-0.001-multitask.txt" afterDir="false" />
+    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="DFP - implemented scheduler and dot product">
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss_CosineSimilarity--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/cosine_sigmoid--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product_no5--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product_sigmoid--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/classifier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/datasets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/Part1_Result_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/Part1_Result_log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/README" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-cfimdb-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-cfimdb-dev-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-cfimdb-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-cfimdb-test-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-sst-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-sst-dev-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/full-model-sst-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/full-model-sst-test-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-cfimdb-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-cfimdb-dev-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-cfimdb-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-cfimdb-test-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-sst-dev-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-sst-dev-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/predictions/last-linear-layer-sst-test-out.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/sentiment_classifier/predictions/last-linear-layer-sst-test-out.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/prepare_submit.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/prepare_submit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/Research.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/Research.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product--last-linear-layer-20-0.001-multitask.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-dev-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-dev-output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-test-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-test-output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-dev-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-dev-output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-test-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-test-output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sts-dev-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sts-dev-output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sts-test-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sts-test-output.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +203,7 @@
       <workItem from="1715371966468" duration="15487000" />
       <workItem from="1717087967157" duration="15613000" />
       <workItem from="1719741151772" duration="13545000" />
-      <workItem from="1719767808058" duration="3859000" />
+      <workItem from="1719767808058" duration="64563000" />
     </task>
     <task id="LOCAL-00001" summary="a1 added">
       <option name="closed" value="true" />
@@ -454,7 +453,47 @@
       <option name="project" value="LOCAL" />
       <updated>1719761405703</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="DFP - first implementation of multitask classifier">
+      <option name="closed" value="true" />
+      <created>1719772223321</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1719772223321</updated>
+    </task>
+    <task id="LOCAL-00033" summary="DFP - first implementation of multitask classifier">
+      <option name="closed" value="true" />
+      <created>1719832799957</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1719832799957</updated>
+    </task>
+    <task id="LOCAL-00034" summary="DFP - basic multitask classifier">
+      <option name="closed" value="true" />
+      <created>1719849839508</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1719849839508</updated>
+    </task>
+    <task id="LOCAL-00035" summary="DFP - basic multitask classifier, done training">
+      <option name="closed" value="true" />
+      <created>1719864878981</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1719864878981</updated>
+    </task>
+    <task id="LOCAL-00036" summary="DFP - implemented scheduler and dot product">
+      <option name="closed" value="true" />
+      <created>1720193907506</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1720193907506</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -508,7 +547,10 @@
     <MESSAGE value="DFP - 3.2 BERT implemented" />
     <MESSAGE value="DFP - 4.4 minBERT for Sentiment Classification" />
     <MESSAGE value="DFP - first implementation of multitask classifier" />
-    <option name="LAST_COMMIT_MESSAGE" value="DFP - first implementation of multitask classifier" />
+    <MESSAGE value="DFP - basic multitask classifier" />
+    <MESSAGE value="DFP - basic multitask classifier, done training" />
+    <MESSAGE value="DFP - implemented scheduler and dot product" />
+    <option name="LAST_COMMIT_MESSAGE" value="DFP - implemented scheduler and dot product" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

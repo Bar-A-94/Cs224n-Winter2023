@@ -7,6 +7,19 @@ STS prediction - dot product instead of linear layer (32) - L1 0.308
                                                      (16) - L1 0.285
                                                      (16) - hub 0.275
                                                      (16) - MSE 0.279
+                 dot product could be negative - sigmoid - not stable
+                                               - abs - 0.255 but started to converge only after 10 epochs
+                                               - not multiply by 5 - 0.297
+                 cosine similarity with sigmoid (16) - 0.251
+                                                (32) - 0.246
+                                                (128) - 0.237
+
 full model fine tune - sts - 0.332 | sst - 0.517 | para - 0.810, needs to split to 3 different models
+there was no effect to train more then 7 epochs on full model fine tune.
+Cosine embedding loss with full model train and then fine tune only the new layers : sts(dot product) - 0.379 | sst - 0.471 | para - 0.710
+                                                                                     sts(cosine similarity) - 0.391
+
+
+
 
 

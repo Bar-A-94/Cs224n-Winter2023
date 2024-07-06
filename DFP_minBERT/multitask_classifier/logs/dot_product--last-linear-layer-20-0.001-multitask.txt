@@ -21,9 +21,3 @@ Epoch 17:: lr :: 0.000010 train loss :: 0.03966, dev acc :: 0.302
 Epoch 18:: lr :: 0.000010 train loss :: 0.03975, dev acc :: 0.302
 Epoch 19:: lr :: 0.000010 train loss :: 0.03995, dev acc :: 0.297
 Start training for sst dataset
-Epoch 0:: lr :: 0.001000 train loss :: 1.57921, dev acc :: 0.342
-Epoch 1:: lr :: 0.001000 train loss :: 1.53604, dev acc :: 0.313
-Epoch 2:: lr :: 0.001000 train loss :: 1.50810, dev acc :: 0.379
-Epoch 3:: lr :: 0.001000 train loss :: 1.48246, dev acc :: 0.387
-Epoch 4:: lr :: 0.001000 train loss :: 1.47697, dev acc :: 0.313
-Epoch 5:: lr :: 0.001000 train loss :: 1.46659, dev acc :: 0.318

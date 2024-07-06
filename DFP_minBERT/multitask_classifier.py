@@ -69,13 +69,7 @@ class MultitaskBERT(nn.Module):
     def __init__(self, config):
         super(MultitaskBERT, self).__init__()
         self.bert = BertModel.from_pretrained('bert-base-uncased')
-        # last-linear-layer mode does not require updating BERT paramters.
-        assert config.fine_tune_mode in ["last-linear-layer", "full-model"]
-        for param in self.bert.parameters():
-            if config.fine_tune_mode == 'last-linear-layer':
-                param.requires_grad = False
-            elif config.fine_tune_mode == 'full-model':
-                param.requires_grad = True
+        self.grad_change(config)
         # My code:
         self.r = 32
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
@@ -89,11 +83,19 @@ class MultitaskBERT(nn.Module):
         # TODO: check size for data compression
         # self.shrink = nn.Linear(config.hidden_size, int(config.hidden_size/2))
         # self.expand = nn.Linear((config.hidden_size/2), config.hidden_size)
-        # TODO: try 1D conv
-        # self.conv1d_paraphrase = nn.Conv1d(in_channels=2, out_channels=64, kernel_size=3)
-        # self.conv1d_similarity = nn.Conv1d(in_channels=2, out_channels=64, kernel_size=3)
-        # self.paraphrase_last_layer = nn.Linear(64, 1)
-        # self.similarity_last_layer = nn.Linear(64, 1)
+
+    def grad_change(self, config, use_config=True):
+        if use_config:
+            # last-linear-layer mode does not require updating BERT paramters.
+            assert config.fine_tune_mode in ["last-linear-layer", "full-model"]
+            for param in self.bert.parameters():
+                if config.fine_tune_mode == 'last-linear-layer':
+                    param.requires_grad = False
+                elif config.fine_tune_mode == 'full-model':
+                    param.requires_grad = True
+        else:
+            for param in self.bert.parameters():
+                param.requires_grad = True
 
     def forward(self, input_ids, attention_mask):
         'Takes a batch of sentences and produces embeddings for them.'
@@ -104,6 +106,11 @@ class MultitaskBERT(nn.Module):
         # TODO: implement the shrink/expand
         bert_output = self.bert(input_ids, attention_mask)['pooler_output']
         return bert_output
+
+    def output_embbedings(self, input_ids_1, attention_mask_1, input_ids_2, attention_mask_2):
+        bert_output_1 = self.forward(input_ids_1, attention_mask_1)
+        bert_output_2 = self.forward(input_ids_2, attention_mask_2)
+        return bert_output_1, bert_output_2
 
     def predict_sentiment(self, input_ids, attention_mask):
         '''Given a batch of sentences, outputs logits for classifying sentiment.
@@ -126,16 +133,6 @@ class MultitaskBERT(nn.Module):
         concat_embbed = torch.cat((bert_out_1, bert_out_2), dim=1)
         return self.dropout(self.paraphrase_last_layer(concat_embbed))
 
-        # TODO: try 1D conv
-        # Stack embeddings: (batch_size, hidden_size, 2)
-        # stacked_embed = torch.stack((bert_out_1, bert_out_2), dim=2)
-        # Apply 1D convolution
-        # conv_out = F.relu(self.conv1d_paraphrase(stacked_embed))
-        # Global max pooling
-        # pooled = F.max_pool1d(conv_out, conv_out.size(2)).squeeze(2)
-        # Final classification
-        # return self.dropout(self.paraphrase_last_layer(pooled))
-
     def predict_similarity(self,
                            input_ids_1, attention_mask_1,
                            input_ids_2, attention_mask_2):
@@ -144,21 +141,15 @@ class MultitaskBERT(nn.Module):
         '''
         bert_out_1 = self.dropout(self.similarity_layer_1(self.forward(input_ids_1, attention_mask_1)))
         bert_out_2 = self.dropout(self.similarity_layer_2(self.forward(input_ids_2, attention_mask_2)))
-        bert_out_1_shaped = bert_out_1.view(bert_out_1.shape[0], 1, bert_out_1.shape[1])
-        bert_out_2_shaped = bert_out_2.view(bert_out_1.shape[0], bert_out_1.shape[1], 1)
-        out = 5 * (bert_out_1_shaped @ bert_out_2_shaped).reshape(input_ids_1.shape[0], -1)
-        # out = 5 * self.sigmoid(self.cos(bert_out_1, bert_out_2).unsqueeze(-1))
-        return out
+        # Dot product:
+        # bert_out_1_shaped = bert_out_1.view(bert_out_1.shape[0], 1, bert_out_1.shape[1])
+        # bert_out_2_shaped = bert_out_2.view(bert_out_1.shape[0], bert_out_1.shape[1], 1)
+        # out = 5 * (bert_out_1_shaped @ bert_out_2_shaped).reshape(input_ids_1.shape[0], -1)
 
-        # TODO: try 1D conv
-        # Stack embeddings: (batch_size, hidden_size, 2)
-        # stacked_embed = torch.stack((bert_out_1, bert_out_2), dim=2)
-        # Apply 1D convolution
-        # conv_out = F.relu(self.conv1d_similarity(stacked_embed))
-        # Global max pooling
-        # pooled = F.max_pool1d(conv_out, conv_out.size(2)).squeeze(2)
-        # Final classification
-        # return self.dropout(self.similarity_last_layer(pooled))
+        # Cosine similarity:
+        out = 2.5 * (self.cos(bert_out_1, bert_out_2).unsqueeze(-1) + 2)
+
+        return out
 
 
 def train_multitask(args):
@@ -189,17 +180,53 @@ def train_multitask(args):
     print("model saved to {}".format(device))
     with open(args.logpath, "w") as f:
         f.write("Training started\n")
+    train_cosine_embedding(args, config, device, model, sts_train_dataloader, model.output_embbedings)
     for data_set_name, inputs, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func in [
         ("sts", 2, sts_train_dataloader, sts_dev_dataloader, model.predict_similarity, F.l1_loss, model_eval_sts),
         ("sst", 1, sst_train_dataloader, sst_dev_dataloader, model.predict_sentiment, F.cross_entropy, model_eval_sst),
         ("para", 2, para_train_dataloader, para_dev_dataloader, model.predict_paraphrase,
-         nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para)
-    ]:
+         nn.BCEWithLogitsLoss(reduction="sum"), model_eval_para)]:
         print_and_log(args, "Start training for {} dataset".format(data_set_name))
         train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func)
 
 
-def train(inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func, eval_func):
+def train_cosine_embedding(args, config, device, model, train_dataloader, predict_func):
+    print_and_log(args, "Start Cosine Embedding training")
+    loss_func = nn.CosineEmbeddingLoss()
+    model.grad_change(config, use_config=False)
+    lr = 1e-5
+
+    optimizer = AdamW(model.parameters(), lr=lr)
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, threshold=0.001, threshold_mode='abs', patience=5)
+    for epoch in range(args.epochs):
+        model.train()
+        train_loss = 0
+        num_batches = 0
+
+        for batch in tqdm(train_dataloader, desc=f'train-{epoch}', disable=TQDM_DISABLE):
+            batch = {k: v.to(device) for k, v in batch.items() if k not in ['sent_ids', 'sents']}
+            optimizer.zero_grad(set_to_none=True)
+            embed_1, embed_2 = predict_func(batch['token_ids_1'], batch['attention_mask_1'], batch['token_ids_2'],
+                                            batch['attention_mask_2'])
+            labels = torch.zeros_like(batch['labels'])
+            labels[batch['labels'] >= 3] = 1
+            labels[batch['labels'] <= 2] = -1
+            loss = loss_func(embed_1, embed_2, labels)
+            loss.backward()
+            optimizer.step()
+
+            train_loss += loss.item()
+            num_batches += 1
+
+        train_loss /= num_batches
+        scheduler.step(train_loss)
+        print_and_log(args,
+                      f"Epoch {epoch}:: lr :: {scheduler.get_last_lr()[-1] :.6f} train loss :: {train_loss :.5f}")
+    model.grad_change(config, use_config=True)
+
+
+def train(num_of_inputs, args, config, device, model, train_dataloader, dev_dataloader, predict_func, loss_func,
+          eval_func):
     lr = args.lr
     optimizer = AdamW(model.parameters(), lr=lr)
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, threshold=0.001, threshold_mode='abs', patience=5)
@@ -214,7 +241,7 @@ def train(inputs, args, config, device, model, train_dataloader, dev_dataloader,
             batch = {k: v.to(device) for k, v in batch.items() if k not in ['sent_ids', 'sents']}
             optimizer.zero_grad(set_to_none=True)
 
-            if inputs == 2:
+            if num_of_inputs == 2:
                 logits = predict_func(batch['token_ids_1'], batch['attention_mask_1'], batch['token_ids_2'],
                                       batch['attention_mask_2'])
                 loss = loss_func(logits, batch['labels'].view(args.batch_size, -1).float()) / args.batch_size
