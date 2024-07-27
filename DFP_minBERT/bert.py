@@ -87,6 +87,8 @@ class BertLayer(nn.Module):
         # Feed forward.
         self.interm_dense = nn.Linear(config.hidden_size, config.intermediate_size)
         self.interm_af = F.gelu
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+
         # Add-norm for feed forward.
         self.out_dense = nn.Linear(config.intermediate_size, config.hidden_size)
         self.out_layer_norm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
@@ -119,6 +121,7 @@ class BertLayer(nn.Module):
         add_norm_attention = self.add_norm(hidden_states, attention_score, self.attention_dense, self.attention_dropout,
                                            self.attention_layer_norm)
         feed_foward = self.interm_af(self.interm_dense(add_norm_attention))
+
         return self.add_norm(add_norm_attention, feed_foward, self.out_dense, self.out_dropout, self.out_layer_norm)
 
 

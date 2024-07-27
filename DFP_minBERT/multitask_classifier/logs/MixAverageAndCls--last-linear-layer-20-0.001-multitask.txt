@@ -1,0 +1,85 @@
+Training started
+Start Cosine Embedding training
+Epoch 0:: lr :: 0.000010 train loss :: 0.32449
+Epoch 1:: lr :: 0.000010 train loss :: 0.22320
+Epoch 2:: lr :: 0.000010 train loss :: 0.17782
+Epoch 3:: lr :: 0.000010 train loss :: 0.14507
+Epoch 4:: lr :: 0.000010 train loss :: 0.11735
+Epoch 5:: lr :: 0.000010 train loss :: 0.09899
+Epoch 6:: lr :: 0.000010 train loss :: 0.08599
+Epoch 7:: lr :: 0.000010 train loss :: 0.07765
+Epoch 8:: lr :: 0.000010 train loss :: 0.06924
+Epoch 9:: lr :: 0.000010 train loss :: 0.05941
+Epoch 10:: lr :: 0.000010 train loss :: 0.05219
+Epoch 11:: lr :: 0.000010 train loss :: 0.05021
+Epoch 12:: lr :: 0.000010 train loss :: 0.04508
+Epoch 13:: lr :: 0.000010 train loss :: 0.04106
+Epoch 14:: lr :: 0.000010 train loss :: 0.03962
+Epoch 15:: lr :: 0.000010 train loss :: 0.03736
+Epoch 16:: lr :: 0.000010 train loss :: 0.03475
+Epoch 17:: lr :: 0.000010 train loss :: 0.03274
+Epoch 18:: lr :: 0.000010 train loss :: 0.03033
+Epoch 19:: lr :: 0.000010 train loss :: 0.02739
+Start training for sts dataset
+Epoch 0:: lr :: 0.001000 train loss :: 0.03356, dev acc :: 0.409
+Epoch 1:: lr :: 0.001000 train loss :: 0.03311, dev acc :: 0.358
+Epoch 2:: lr :: 0.001000 train loss :: 0.03315, dev acc :: 0.415
+Epoch 3:: lr :: 0.001000 train loss :: 0.03300, dev acc :: 0.395
+Epoch 4:: lr :: 0.001000 train loss :: 0.03260, dev acc :: 0.407
+Epoch 5:: lr :: 0.001000 train loss :: 0.03248, dev acc :: 0.414
+Epoch 6:: lr :: 0.001000 train loss :: 0.03238, dev acc :: 0.405
+Epoch 7:: lr :: 0.001000 train loss :: 0.03274, dev acc :: 0.418
+Epoch 8:: lr :: 0.001000 train loss :: 0.03261, dev acc :: 0.293
+Epoch 9:: lr :: 0.001000 train loss :: 0.03506, dev acc :: 0.399
+Epoch 10:: lr :: 0.001000 train loss :: 0.03264, dev acc :: 0.409
+Epoch 11:: lr :: 0.000100 train loss :: 0.03243, dev acc :: 0.407
+Epoch 12:: lr :: 0.000100 train loss :: 0.03211, dev acc :: 0.394
+Epoch 13:: lr :: 0.000100 train loss :: 0.03214, dev acc :: 0.391
+Epoch 14:: lr :: 0.000100 train loss :: 0.03204, dev acc :: 0.391
+Epoch 15:: lr :: 0.000100 train loss :: 0.03212, dev acc :: 0.372
+Epoch 16:: lr :: 0.000100 train loss :: 0.03205, dev acc :: 0.412
+Epoch 17:: lr :: 0.000010 train loss :: 0.03223, dev acc :: 0.414
+Epoch 18:: lr :: 0.000010 train loss :: 0.03206, dev acc :: 0.415
+Epoch 19:: lr :: 0.000010 train loss :: 0.03230, dev acc :: 0.399
+Start training for sst dataset
+Epoch 0:: lr :: 0.001000 train loss :: 2.67693, dev acc :: 0.313
+Epoch 1:: lr :: 0.001000 train loss :: 2.12425, dev acc :: 0.383
+Epoch 2:: lr :: 0.001000 train loss :: 1.93444, dev acc :: 0.420
+Epoch 3:: lr :: 0.001000 train loss :: 1.78177, dev acc :: 0.329
+Epoch 4:: lr :: 0.001000 train loss :: 1.59812, dev acc :: 0.371
+Epoch 5:: lr :: 0.001000 train loss :: 1.51863, dev acc :: 0.347
+Epoch 6:: lr :: 0.001000 train loss :: 1.46477, dev acc :: 0.422
+Epoch 7:: lr :: 0.001000 train loss :: 1.41115, dev acc :: 0.399
+Epoch 8:: lr :: 0.001000 train loss :: 1.40549, dev acc :: 0.388
+Epoch 9:: lr :: 0.001000 train loss :: 1.36705, dev acc :: 0.403
+Epoch 10:: lr :: 0.001000 train loss :: 1.35986, dev acc :: 0.416
+Epoch 11:: lr :: 0.001000 train loss :: 1.34783, dev acc :: 0.415
+Epoch 12:: lr :: 0.001000 train loss :: 1.35038, dev acc :: 0.405
+Epoch 13:: lr :: 0.001000 train loss :: 1.33782, dev acc :: 0.419
+Epoch 14:: lr :: 0.001000 train loss :: 1.34063, dev acc :: 0.426
+Epoch 15:: lr :: 0.001000 train loss :: 1.33533, dev acc :: 0.413
+Epoch 16:: lr :: 0.001000 train loss :: 1.33544, dev acc :: 0.424
+Epoch 17:: lr :: 0.001000 train loss :: 1.33532, dev acc :: 0.425
+Epoch 18:: lr :: 0.001000 train loss :: 1.34508, dev acc :: 0.432
+Epoch 19:: lr :: 0.001000 train loss :: 1.34575, dev acc :: 0.406
+Start training for para dataset
+Epoch 0:: lr :: 0.001000 train loss :: 0.65140, dev acc :: 0.684
+Epoch 1:: lr :: 0.001000 train loss :: 0.64273, dev acc :: 0.694
+Epoch 2:: lr :: 0.001000 train loss :: 0.64241, dev acc :: 0.699
+Epoch 3:: lr :: 0.001000 train loss :: 0.64201, dev acc :: 0.694
+Epoch 4:: lr :: 0.001000 train loss :: 0.64145, dev acc :: 0.674
+Epoch 5:: lr :: 0.001000 train loss :: 0.64183, dev acc :: 0.689
+Epoch 6:: lr :: 0.001000 train loss :: 0.64170, dev acc :: 0.688
+Epoch 7:: lr :: 0.001000 train loss :: 0.64081, dev acc :: 0.670
+Epoch 8:: lr :: 0.001000 train loss :: 0.64078, dev acc :: 0.693
+Epoch 9:: lr :: 0.001000 train loss :: 0.64142, dev acc :: 0.691
+Epoch 10:: lr :: 0.000100 train loss :: 0.64114, dev acc :: 0.696
+Epoch 11:: lr :: 0.000100 train loss :: 0.59867, dev acc :: 0.715
+Epoch 12:: lr :: 0.000100 train loss :: 0.59764, dev acc :: 0.714
+Epoch 13:: lr :: 0.000100 train loss :: 0.59710, dev acc :: 0.715
+Epoch 14:: lr :: 0.000100 train loss :: 0.59669, dev acc :: 0.716
+Epoch 15:: lr :: 0.000100 train loss :: 0.59694, dev acc :: 0.714
+Epoch 16:: lr :: 0.000100 train loss :: 0.59615, dev acc :: 0.717
+Epoch 17:: lr :: 0.000100 train loss :: 0.59675, dev acc :: 0.714
+Epoch 18:: lr :: 0.000100 train loss :: 0.59576, dev acc :: 0.718
+Epoch 19:: lr :: 0.000100 train loss :: 0.59646, dev acc :: 0.716

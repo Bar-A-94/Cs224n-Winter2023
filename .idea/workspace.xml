@@ -4,16 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="DFP - implemented scheduler and dot product">
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss_CosineSimilarity--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/cosine_sigmoid--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product_no5--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product_sigmoid--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+    <list default="true" id="3d47c412-7fa0-44a8-a516-38a7b38e746b" name="Changes" comment="DFP - Done experimenting">
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/2_interm_layers--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/AddLayerToClassifier--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/GelU--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/LastToPoolerToBoth--full-model-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/LastToPoolerToBoth--full-model-20-1e-05-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/LastToPoolerToBoth--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/MixAverageAndCls--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/MixAverageAndCls2--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/NoAddedLayers--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/averageVScls--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/bert.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/bert.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/Research.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/Research.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product--last-linear-layer-20-0.001-multitask.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/dot_product--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss_CosineSimilarity_reorgnaize--last-linear-layer-20-0.001-multitask.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/logs/CosineEmbeddingLoss_CosineSimilarity_reorgnaize--last-linear-layer-20-0.001-multitask.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-dev-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-dev-output.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-test-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/para-test-output.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-dev-output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DFP_minBERT/multitask_classifier/predictions/sst-dev-output.csv" afterDir="false" />
@@ -86,44 +93,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python.a1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.london_baseline.executor&quot;: &quot;Run&quot;,
-    &quot;Python.parser_model.executor&quot;: &quot;Run&quot;,
-    &quot;Python.parser_transitions.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sanity_check.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.sgd.executor&quot;: &quot;Run&quot;,
-    &quot;Python.utils.executor&quot;: &quot;Run&quot;,
-    &quot;Python.word2vec.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/bara/PycharmProjects/cs224n/a1&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.a1.executor": "Run",
+    "Python.london_baseline.executor": "Run",
+    "Python.parser_model.executor": "Run",
+    "Python.parser_transitions.executor": "Run",
+    "Python.print_model.executor": "Run",
+    "Python.run.executor": "Run",
+    "Python.sanity_check.executor": "Debug",
+    "Python.sgd.executor": "Run",
+    "Python.utils.executor": "Run",
+    "Python.word2vec.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/bara/PycharmProjects/cs224n/a1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/a1" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/DFP_minBERT" />
       <recent name="$PROJECT_DIR$/DFP_minBERT/part1" />
       <recent name="$PROJECT_DIR$/a3/code" />
       <recent name="$PROJECT_DIR$/a2/code" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.parser_transitions">
+  <component name="RunManager">
     <configuration name="parser_transitions" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="cs224n" />
       <option name="ENV_FILES" value="" />
@@ -203,7 +212,7 @@
       <workItem from="1715371966468" duration="15487000" />
       <workItem from="1717087967157" duration="15613000" />
       <workItem from="1719741151772" duration="13545000" />
-      <workItem from="1719767808058" duration="64563000" />
+      <workItem from="1719767808058" duration="103185000" />
     </task>
     <task id="LOCAL-00001" summary="a1 added">
       <option name="closed" value="true" />
@@ -493,7 +502,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720193907506</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="DFP - implemented Cosine Embedding Loss">
+      <option name="closed" value="true" />
+      <created>1720253463647</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1720253463647</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -526,7 +543,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="a1 added" />
     <MESSAGE value="a1 completed" />
     <MESSAGE value="a2 started" />
     <MESSAGE value="a2 finished up to negSampling - (a)(iii)" />
@@ -550,7 +566,9 @@
     <MESSAGE value="DFP - basic multitask classifier" />
     <MESSAGE value="DFP - basic multitask classifier, done training" />
     <MESSAGE value="DFP - implemented scheduler and dot product" />
-    <option name="LAST_COMMIT_MESSAGE" value="DFP - implemented scheduler and dot product" />
+    <MESSAGE value="DFP - implemented Cosine Embedding Loss" />
+    <MESSAGE value="DFP - Done experimenting" />
+    <option name="LAST_COMMIT_MESSAGE" value="DFP - Done experimenting" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -560,6 +578,7 @@
     <SUITE FILE_PATH="coverage/cs224n$a1.coverage" NAME="a1 Coverage Results" MODIFIED="1710518915679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a1" />
     <SUITE FILE_PATH="coverage/cs224n$sgd.coverage" NAME="sgd Coverage Results" MODIFIED="1711378493499" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a2/code" />
     <SUITE FILE_PATH="coverage/cs224n$london_baseline.coverage" NAME="london_baseline Coverage Results" MODIFIED="1716573398507" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a5/code/src" />
+    <SUITE FILE_PATH="coverage/cs224n$print_model.coverage" NAME="print_model Coverage Results" MODIFIED="1720282243728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/DFP_minBERT" />
     <SUITE FILE_PATH="coverage/cs224n$parser_transitions.coverage" NAME="parser_transitions Coverage Results" MODIFIED="1711889794300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a3/code" />
     <SUITE FILE_PATH="coverage/cs224n$run.coverage" NAME="run Coverage Results" MODIFIED="1712407299169" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a4/code" />
     <SUITE FILE_PATH="coverage/cs224n$parser_model.coverage" NAME="parser_model Coverage Results" MODIFIED="1711889842586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/a3/code" />

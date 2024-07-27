@@ -16,10 +16,9 @@ STS prediction - dot product instead of linear layer (32) - L1 0.308
 
 full model fine tune - sts - 0.332 | sst - 0.517 | para - 0.810, needs to split to 3 different models
 there was no effect to train more then 7 epochs on full model fine tune.
-Cosine embedding loss with full model train and then fine tune only the new layers : sts(dot product) - 0.379 | sst - 0.471 | para - 0.710
-                                                                                     sts(cosine similarity) - 0.391
-
-
-
-
-
+Cosine embedding loss with full model train and then fine tune only the new layers : sts(dot product) - 0.379 | sst - 0.417 | para - 0.710
+                                                                                     sts(cosine similarity) - 0.453 | sst - 0.409 | para 0.706
+Add a interim layer for the bert model - sts - 0.454 | sst - 0.282 | para - 0.640
+Change the bert output, from poller to average of the last layer - sts - 0.588 | sst - 0.396 | para - 0.690
+Concatenate poller output with the average last hidden state and feed forward - sts - 0.461 | sst - 0.442 | para - 0.717
+Full train cosine embedding loss with last layer, then full train on the pooler output, then fine tune - sts - 0.530 | sst - 0.385 | para - 0.701
